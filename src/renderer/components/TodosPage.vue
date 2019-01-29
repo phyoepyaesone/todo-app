@@ -1,5 +1,5 @@
 <template>
-  <v-layout row justify-center>
+  <div class="text-xs-center">
     <h1>TODOs</h1>
     <v-btn
       color="#2e0a91"
@@ -8,11 +8,32 @@
     >
       ADD
     </v-btn>
-    <ul>
-      <li v-for="item in items" :key="item">
-        {{item}}
-      </li>
-    </ul>
+    <v-layout row>
+    <v-flex xs12 sm6 offset-sm3>
+      <v-card>
+        <v-toolbar color="cyan" dark>
+          <v-toolbar-side-icon></v-toolbar-side-icon>
+          <v-toolbar-title>Inbox</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon>
+            <v-icon>search</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-list two-line>
+          <template v-for="(item, index) in items">
+            <v-list-tile
+            :key="index"
+            >
+              <v-list-tile-content>
+                <v-list-tile-title v-html="item"></v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-divider v-if="index + 1 < items.length" :key="`divider-${index}`"></v-divider>
+          </template>
+        </v-list>
+      </v-card>
+    </v-flex>
+  </v-layout>
     <v-dialog
       v-model="dialog"
       max-width="290"
@@ -49,7 +70,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </div>
 </template>
 
 <script>
@@ -59,12 +80,11 @@ export default{
       dialog: false,
       work: '',
       items: [],
-      light: false,
     }
   },
   mounted() {
+    this.items = this.$electron.ipcRenderer.sendSync('todo-list')
     this.$electron.ipcRenderer.on('todo-list', (event, data) => {
-      console.log('todos:', data)
       this.items = data
     })
   },

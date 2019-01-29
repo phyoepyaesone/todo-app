@@ -9,7 +9,7 @@ function DataStore(setting) {
     return this
   }
   this.getTodos = function () {
-    this.todos = this.store('todos') || []
+    this.todos = this.store.get('todos') || []
     return this
   }
   this.addTodo = function (todo) {
